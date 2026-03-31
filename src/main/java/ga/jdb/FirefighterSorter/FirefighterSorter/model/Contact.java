@@ -14,16 +14,23 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 @Setter
-@Table(name = "contact_types")
+@Table(name = "contact")
 @Entity
-public class ContactType {
+public class Contact {
     @Id
     @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column
-    private String method;
+    private Integer priority;
+
+    @Column
+    private String value;
+
+    // TODO: Add connection
+//    @Column
+//    private ContactType contactType;
 
     @CreationTimestamp
     @Column
