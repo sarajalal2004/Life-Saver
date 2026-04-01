@@ -30,6 +30,10 @@ public class Contact {
 
     // TODO: Add connection
 //    @Column
+//    private Case case;
+
+    // TODO: Add connection
+//    @Column
 //    private ContactType contactType;
 
     @CreationTimestamp
