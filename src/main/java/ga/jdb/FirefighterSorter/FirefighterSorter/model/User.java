@@ -3,10 +3,7 @@ package ga.jdb.FirefighterSorter.FirefighterSorter.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -18,6 +15,7 @@ import java.time.LocalDateTime;
 @Setter
 @Table(name = "users")
 @Entity
+@ToString(exclude = {"password", "userProfile"})
 public class User {
     @Id
     @Column
