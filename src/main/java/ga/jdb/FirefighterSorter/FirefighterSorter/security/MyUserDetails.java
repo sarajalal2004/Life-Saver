@@ -1,6 +1,7 @@
 package ga.jdb.FirefighterSorter.FirefighterSorter.security;
 
 import ga.jdb.FirefighterSorter.FirefighterSorter.model.User;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.jspecify.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
+@AllArgsConstructor
 @Getter
 public class MyUserDetails implements UserDetails {
     private User user;
