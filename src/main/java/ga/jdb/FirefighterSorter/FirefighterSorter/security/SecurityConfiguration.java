@@ -39,7 +39,8 @@ public class SecurityConfiguration{
                 .authorizeHttpRequests(auth ->
                                 auth.requestMatchers(
                                         "/auth/users/login",
-                                        "/auth/users/register"
+                                        "/auth/users/register",
+                                        "/auth/users/verify"
                                 ).permitAll().anyRequest().authenticated()
                         );
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
