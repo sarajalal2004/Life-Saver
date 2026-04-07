@@ -11,7 +11,9 @@ import ga.jdb.FirefighterSorter.FirefighterSorter.security.MyUserDetails;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -24,6 +26,9 @@ import java.util.UUID;
 
 @Service
 public class UserService {
+    @Value("${spring.mail.username}")
+    private String fromMail;
+
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JWTUtils jwtUtils;
@@ -76,6 +81,7 @@ public class UserService {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
         helper.setTo(email);
+        helper.setFrom(fromMail);
         helper.setSubject("Verify Your Email");
         helper.setText("<h1>Hey </h1>"+
                 "<p>Please click the following Button to verify</p>"+
@@ -84,9 +90,9 @@ public class UserService {
         mailSender.send(message);
     }
 
-    public ResponseEntity<?> verifyUser(String token){
+    public ResponseEntity<String> verifyUser(String token){
         EmailVerificationToken emailVerificationToken= emailVerificationTokenRepository.findByToken(token)
-                .orElseThrow(() -> new AuthenticationException("Invalid verification token"));
+                .orElseThrow(() -> new AuthenticationException("Invalid verification token or email already verified"));
         if(emailVerificationToken.getExpiryDate().isAfter(LocalDateTime.now())){
             emailVerificationToken.getUser().setVerified(true);
         }else {
@@ -94,7 +100,9 @@ public class UserService {
         }
         userRepository.save(emailVerificationToken.getUser());
         emailVerificationTokenRepository.delete(emailVerificationToken);
-        return ResponseEntity.ok("Email verified");
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body("Email verified Successfully🎉");
     }
 
     public User findUserByEmail(String email){
