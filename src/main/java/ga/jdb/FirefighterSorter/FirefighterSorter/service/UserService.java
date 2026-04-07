@@ -1,5 +1,7 @@
 package ga.jdb.FirefighterSorter.FirefighterSorter.service;
 
+import ga.jdb.FirefighterSorter.FirefighterSorter.exception.AuthenticationException;
+import ga.jdb.FirefighterSorter.FirefighterSorter.exception.InformationExistException;
 import ga.jdb.FirefighterSorter.FirefighterSorter.model.EmailVerificationToken;
 import ga.jdb.FirefighterSorter.FirefighterSorter.model.User;
 import ga.jdb.FirefighterSorter.FirefighterSorter.repository.EmailVerificationTokenRepository;
@@ -14,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -47,7 +48,7 @@ public class UserService {
         this.mailSender = mailSender;
     }
 
-    public User createUser(User user){
+    public User createUser(User user) throws MessagingException {
         if(!userRepository.existsByEmail(user.getEmail())){
             user.setPassword(passwordEncoder.encode(user.getPassword()));
 
@@ -62,15 +63,10 @@ public class UserService {
             token.setExpiryDate(LocalDateTime.now().plusMinutes(30));
             emailVerificationTokenRepository.save(token);
 
-            try{
-                sendVerificationEmail(userObject.getEmail(), token.getToken());
-            } catch (MessagingException e) {
-                throw new RuntimeException(e);
-            }
+            sendVerificationEmail(userObject.getEmail(), token.getToken());
             return userObject;
         }else {
-            throw new RuntimeException();
-            //TODO: add the exception
+            throw new InformationExistException("Username already used");
         }
     }
 
