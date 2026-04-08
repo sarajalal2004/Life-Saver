@@ -1,6 +1,7 @@
 package ga.jdb.FirefighterSorter.FirefighterSorter.controller;
 
 import ga.jdb.FirefighterSorter.FirefighterSorter.model.User;
+import ga.jdb.FirefighterSorter.FirefighterSorter.model.requests.LoginRequest;
 import ga.jdb.FirefighterSorter.FirefighterSorter.service.UserService;
 import jakarta.mail.MessagingException;
 import jakarta.websocket.server.PathParam;
@@ -26,5 +27,10 @@ public class UserController {
     @GetMapping(path = "/verify")
     public ResponseEntity<String> verifyUser(@RequestParam("token") String token){
         return userService.verifyUser(token);
+    }
+
+    @PostMapping(path = "/login")
+    public ResponseEntity<String> loginUser(@RequestBody LoginRequest loginRequest){
+        return userService.loginUser(loginRequest);
     }
 }
