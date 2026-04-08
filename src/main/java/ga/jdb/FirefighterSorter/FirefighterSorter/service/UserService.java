@@ -4,6 +4,7 @@ import ga.jdb.FirefighterSorter.FirefighterSorter.exception.AuthenticationExcept
 import ga.jdb.FirefighterSorter.FirefighterSorter.exception.InformationExistException;
 import ga.jdb.FirefighterSorter.FirefighterSorter.model.EmailVerificationToken;
 import ga.jdb.FirefighterSorter.FirefighterSorter.model.User;
+import ga.jdb.FirefighterSorter.FirefighterSorter.model.requests.LoginRequest;
 import ga.jdb.FirefighterSorter.FirefighterSorter.repository.EmailVerificationTokenRepository;
 import ga.jdb.FirefighterSorter.FirefighterSorter.repository.UserRepository;
 import ga.jdb.FirefighterSorter.FirefighterSorter.security.JWTUtils;
@@ -17,7 +18,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.*;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -107,5 +110,23 @@ public class UserService {
 
     public User findUserByEmail(String email){
         return userRepository.findUserByEmail(email);
+    }
+
+    public ResponseEntity<String> loginUser(LoginRequest request){
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword());
+        try{
+            Authentication authentication =  authenticationManager.authenticate(authenticationToken);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            myUserDetails = (MyUserDetails) authentication.getPrincipal();
+            final String JWT = jwtUtils.generateJwtToken(myUserDetails);
+            return ResponseEntity.ok(JWT);
+        } catch (LockedException e) {
+            throw new AuthenticationException("Error: This account has been deactivated. Please contact an admin for support.");
+        } catch (DisabledException e) {
+            throw new AuthenticationException("Error: Email not verified. Please verify your email before logging in.");
+        } catch (BadCredentialsException e) {
+            throw new AuthenticationException("Error: Username or password is incorrect");
+        }
     }
 }

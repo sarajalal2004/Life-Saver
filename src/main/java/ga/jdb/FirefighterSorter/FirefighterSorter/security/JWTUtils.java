@@ -19,7 +19,7 @@ public class JWTUtils {
     @Value("${jwt-expiration-ms}")
     private int jwtExpirationMs;
 
-    private String generateJwtToken(MyUserDetails myUserDetails){
+    public String generateJwtToken(MyUserDetails myUserDetails){
         return Jwts
                 .builder()
                 .setSubject(myUserDetails.getUsername())
