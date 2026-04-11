@@ -2,14 +2,11 @@ package ga.jdb.FirefighterSorter.FirefighterSorter.controller;
 
 import ga.jdb.FirefighterSorter.FirefighterSorter.model.User;
 import ga.jdb.FirefighterSorter.FirefighterSorter.model.requests.ChangePasswordRequest;
-import ga.jdb.FirefighterSorter.FirefighterSorter.model.requests.ForgetPasswordRequest;
+import ga.jdb.FirefighterSorter.FirefighterSorter.model.requests.EmailRequest;
 import ga.jdb.FirefighterSorter.FirefighterSorter.model.requests.LoginRequest;
-import ga.jdb.FirefighterSorter.FirefighterSorter.model.requests.ResetPasswordRequest;
 import ga.jdb.FirefighterSorter.FirefighterSorter.service.UserService;
 import jakarta.mail.MessagingException;
-import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,12 +41,17 @@ public class UserController {
     }
 
     @PostMapping(path = "/forget-password")
-    public ResponseEntity<String> forgetPassword(@RequestBody ForgetPasswordRequest forgetPasswordRequest) throws MessagingException {
-        return userService.forgetPassword(forgetPasswordRequest);
+    public ResponseEntity<String> forgetPassword(@RequestBody EmailRequest emailRequest) throws MessagingException {
+        return userService.forgetPassword(emailRequest);
     }
 
     @PostMapping(path = "/reset-password")
     public ResponseEntity<String> resetPassword(@RequestParam String token, @RequestParam String newPassword){
         return userService.resetPassword(token, newPassword);
+    }
+
+    @PostMapping(path = "/Inactivate")
+    public ResponseEntity<String> deleteUser(@RequestBody EmailRequest emailRequest){
+        return userService.deleteUser(emailRequest);
     }
 }
