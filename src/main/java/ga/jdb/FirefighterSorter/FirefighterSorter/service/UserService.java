@@ -3,15 +3,22 @@ package ga.jdb.FirefighterSorter.FirefighterSorter.service;
 import ga.jdb.FirefighterSorter.FirefighterSorter.exception.AuthenticationException;
 import ga.jdb.FirefighterSorter.FirefighterSorter.exception.BadRequestException;
 import ga.jdb.FirefighterSorter.FirefighterSorter.exception.InformationExistException;
+import ga.jdb.FirefighterSorter.FirefighterSorter.exception.InformationNotFoundException;
 import ga.jdb.FirefighterSorter.FirefighterSorter.model.EmailVerificationToken;
+import ga.jdb.FirefighterSorter.FirefighterSorter.model.PasswordResetToken;
 import ga.jdb.FirefighterSorter.FirefighterSorter.model.User;
 import ga.jdb.FirefighterSorter.FirefighterSorter.model.requests.ChangePasswordRequest;
+import ga.jdb.FirefighterSorter.FirefighterSorter.model.requests.ForgetPasswordRequest;
 import ga.jdb.FirefighterSorter.FirefighterSorter.model.requests.LoginRequest;
+import ga.jdb.FirefighterSorter.FirefighterSorter.model.requests.ResetPasswordRequest;
 import ga.jdb.FirefighterSorter.FirefighterSorter.repository.EmailVerificationTokenRepository;
+import ga.jdb.FirefighterSorter.FirefighterSorter.repository.PasswordResetTokenRepository;
 import ga.jdb.FirefighterSorter.FirefighterSorter.repository.UserRepository;
 import ga.jdb.FirefighterSorter.FirefighterSorter.security.JWTUtils;
 import ga.jdb.FirefighterSorter.FirefighterSorter.security.MyUserDetails;
+import jakarta.mail.AuthenticationFailedException;
 import jakarta.mail.MessagingException;
+import jakarta.mail.internet.AddressException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,6 +34,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Random;
 import java.util.UUID;
 
 @Service
@@ -40,6 +48,7 @@ public class UserService {
     private final AuthenticationManager authenticationManager;
     private MyUserDetails myUserDetails;
     private EmailVerificationTokenRepository emailVerificationTokenRepository;
+    private PasswordResetTokenRepository passwordResetTokenRepository;
     private JavaMailSender mailSender;
 
     @Autowired
@@ -48,6 +57,7 @@ public class UserService {
                        @Lazy AuthenticationManager authenticationManager,
                        @Lazy MyUserDetails myUserDetails,
                        EmailVerificationTokenRepository emailVerificationTokenRepository,
+                       @Lazy PasswordResetTokenRepository passwordResetTokenRepository,
                        @Lazy JavaMailSender mailSender){
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -55,6 +65,7 @@ public class UserService {
         this.authenticationManager = authenticationManager;
         this.myUserDetails = myUserDetails;
         this.emailVerificationTokenRepository = emailVerificationTokenRepository;
+        this.passwordResetTokenRepository = passwordResetTokenRepository;
         this.mailSender = mailSender;
     }
 
@@ -149,6 +160,55 @@ public class UserService {
             loginUser.setPassword(passwordEncoder.encode(request.getNewPassword()));
             userRepository.save(loginUser);
             return ResponseEntity.ok("password has been created");
+        }
+    }
+
+    public ResponseEntity<String> forgetPassword(ForgetPasswordRequest request) throws MessagingException {
+        if(userRepository.existsByEmail(request.getEmail())){
+            User forgetPassUser = userRepository.findUserByEmail(request.getEmail());
+            if(forgetPassUser.getStatus().equals(User.Status.Inactive))
+                throw new AuthenticationException("Error: This account has been deactivated. Please contact an admin for support.");
+            PasswordResetToken passwordResetToken =
+                    passwordResetTokenRepository
+                    .findByUser(forgetPassUser)
+                    .orElse(new PasswordResetToken());
+            passwordResetToken.setUser(forgetPassUser);
+            passwordResetToken.setToken(UUID.randomUUID().toString());
+            passwordResetToken.setExpiryDate(LocalDateTime.now().plusMinutes(30));
+            passwordResetTokenRepository.save(passwordResetToken);
+            sendForgetPasswordEmail(request.getEmail(), passwordResetToken.getToken());
+        }
+        return ResponseEntity.ok("If user exist, email send to reset password");
+    }
+
+    private void sendForgetPasswordEmail(String email, String token) throws MessagingException {
+        String URL = "http://localhost:8080/auth/users/reset-password";
+
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+        helper.setTo(email);
+        helper.setFrom(fromMail);
+        helper.setSubject("Reset your password");
+        helper.setText("<p>Please enter your email and password</p>"+
+                        "<form method='post' action='" + URL + "'>"+
+                        "<input type='hidden' name='token' value='" + token + "'/>"+
+                        "<label>New Password</label>"+
+                        "<input type='text' name='newPassword'/>"+
+                        "</form>"
+                , true);
+        mailSender.send(message);
+    }
+
+    public ResponseEntity<String> resetPassword(String token, String newPassword){
+        PasswordResetToken resetToken = passwordResetTokenRepository.findByToken(token).orElseThrow(() -> new AuthenticationException("Request is invalid"));
+        User resetTokenUser = resetToken.getUser();
+        if(newPassword != null){
+            resetTokenUser.setPassword(passwordEncoder.encode(newPassword));
+            userRepository.save(resetTokenUser);
+            passwordResetTokenRepository.delete(resetToken);
+            return ResponseEntity.ok("Password has been reset Successfully! 😁");
+        }else{
+            throw new BadRequestException("The password is not accepted");
         }
     }
 }
