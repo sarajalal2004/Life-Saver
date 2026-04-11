@@ -10,6 +10,7 @@ import ga.jdb.FirefighterSorter.FirefighterSorter.model.User;
 import ga.jdb.FirefighterSorter.FirefighterSorter.model.requests.ChangePasswordRequest;
 import ga.jdb.FirefighterSorter.FirefighterSorter.model.requests.EmailRequest;
 import ga.jdb.FirefighterSorter.FirefighterSorter.model.requests.LoginRequest;
+import ga.jdb.FirefighterSorter.FirefighterSorter.model.requests.UpdateRoleRequest;
 import ga.jdb.FirefighterSorter.FirefighterSorter.repository.EmailVerificationTokenRepository;
 import ga.jdb.FirefighterSorter.FirefighterSorter.repository.PasswordResetTokenRepository;
 import ga.jdb.FirefighterSorter.FirefighterSorter.repository.UserRepository;
@@ -218,6 +219,30 @@ public class UserService {
             deleteUser.setStatus(User.Status.Inactive);
             userRepository.save(deleteUser);
             return ResponseEntity.ok("User deleted Successfully");
+        }
+    }
+
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<String> activateUser(EmailRequest request){
+        if(!userRepository.existsByEmail(request.getEmail()))
+            throw new InformationNotFoundException("Invalid email");
+        else {
+            User ActiveUser = userRepository.findUserByEmail(request.getEmail());
+            ActiveUser.setStatus(User.Status.Active);
+            userRepository.save(ActiveUser);
+            return ResponseEntity.ok("User activated Successfully");
+        }
+    }
+
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<String> updateRole(UpdateRoleRequest request){
+        if(!userRepository.existsByEmail(request.getEmail()))
+            throw new InformationNotFoundException("Invalid email");
+        else {
+            User userObj = userRepository.findUserByEmail(request.getEmail());
+            userObj.setRole(request.getRole());
+            userRepository.save(userObj);
+            return ResponseEntity.ok("User role updated Successfully");
         }
     }
 }
