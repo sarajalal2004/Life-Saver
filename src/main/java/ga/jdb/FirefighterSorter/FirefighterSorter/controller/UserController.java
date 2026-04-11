@@ -4,6 +4,7 @@ import ga.jdb.FirefighterSorter.FirefighterSorter.model.User;
 import ga.jdb.FirefighterSorter.FirefighterSorter.model.requests.ChangePasswordRequest;
 import ga.jdb.FirefighterSorter.FirefighterSorter.model.requests.EmailRequest;
 import ga.jdb.FirefighterSorter.FirefighterSorter.model.requests.LoginRequest;
+import ga.jdb.FirefighterSorter.FirefighterSorter.model.requests.UpdateRoleRequest;
 import ga.jdb.FirefighterSorter.FirefighterSorter.service.UserService;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,8 +51,18 @@ public class UserController {
         return userService.resetPassword(token, newPassword);
     }
 
-    @PostMapping(path = "/Inactivate")
+    @PostMapping(path = "/inactivate")
     public ResponseEntity<String> deleteUser(@RequestBody EmailRequest emailRequest){
         return userService.deleteUser(emailRequest);
+    }
+
+    @PostMapping(path = "/reactivate")
+    public ResponseEntity<String> activateUser(@RequestBody EmailRequest emailRequest){
+        return userService.activateUser(emailRequest);
+    }
+
+    @PostMapping(path = "/update-role")
+    public ResponseEntity<String> updateRole(@RequestBody UpdateRoleRequest updateRoleRequest){
+        return userService.updateRole(updateRoleRequest);
     }
 }
