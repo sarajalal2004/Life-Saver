@@ -1,6 +1,7 @@
 package ga.jdb.FirefighterSorter.FirefighterSorter.controller;
 
 import ga.jdb.FirefighterSorter.FirefighterSorter.model.User;
+import ga.jdb.FirefighterSorter.FirefighterSorter.model.requests.ChangePasswordRequest;
 import ga.jdb.FirefighterSorter.FirefighterSorter.model.requests.LoginRequest;
 import ga.jdb.FirefighterSorter.FirefighterSorter.service.UserService;
 import jakarta.mail.MessagingException;
@@ -32,5 +33,10 @@ public class UserController {
     @PostMapping(path = "/login")
     public ResponseEntity<String> loginUser(@RequestBody LoginRequest loginRequest){
         return userService.loginUser(loginRequest);
+    }
+
+    @PostMapping(path = "/change-password")
+    public ResponseEntity<String> changePassword(@RequestBody ChangePasswordRequest changePasswordRequest){
+        return userService.changePassword(changePasswordRequest);
     }
 }

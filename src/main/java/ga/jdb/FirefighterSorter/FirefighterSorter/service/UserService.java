@@ -1,9 +1,11 @@
 package ga.jdb.FirefighterSorter.FirefighterSorter.service;
 
 import ga.jdb.FirefighterSorter.FirefighterSorter.exception.AuthenticationException;
+import ga.jdb.FirefighterSorter.FirefighterSorter.exception.BadRequestException;
 import ga.jdb.FirefighterSorter.FirefighterSorter.exception.InformationExistException;
 import ga.jdb.FirefighterSorter.FirefighterSorter.model.EmailVerificationToken;
 import ga.jdb.FirefighterSorter.FirefighterSorter.model.User;
+import ga.jdb.FirefighterSorter.FirefighterSorter.model.requests.ChangePasswordRequest;
 import ga.jdb.FirefighterSorter.FirefighterSorter.model.requests.LoginRequest;
 import ga.jdb.FirefighterSorter.FirefighterSorter.repository.EmailVerificationTokenRepository;
 import ga.jdb.FirefighterSorter.FirefighterSorter.repository.UserRepository;
@@ -127,6 +129,26 @@ public class UserService {
             throw new AuthenticationException("Error: Email not verified. Please verify your email before logging in.");
         } catch (BadCredentialsException e) {
             throw new AuthenticationException("Error: Username or password is incorrect");
+        }
+    }
+
+    public static User getCurrentLoggedInUser(){
+        MyUserDetails myUserDetails = (MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(myUserDetails == null)
+            throw new AuthenticationException("No user is logged in currently");
+        return myUserDetails.getUser();
+    }
+
+    public ResponseEntity<String> changePassword(ChangePasswordRequest request){
+        User loginUser = getCurrentLoggedInUser();
+        if(!passwordEncoder.matches(request.getOldPassword(), loginUser.getPassword())){
+            return ResponseEntity.ok("Old password is not correct");
+        }else if(request.getOldPassword().equals(request.getNewPassword()))
+            return ResponseEntity.ok("New password couldn't be as old password");
+        else{
+            loginUser.setPassword(passwordEncoder.encode(request.getNewPassword()));
+            userRepository.save(loginUser);
+            return ResponseEntity.ok("password has been created");
         }
     }
 }
