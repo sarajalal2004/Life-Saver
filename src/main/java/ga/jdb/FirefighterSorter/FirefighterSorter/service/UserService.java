@@ -8,17 +8,14 @@ import ga.jdb.FirefighterSorter.FirefighterSorter.model.EmailVerificationToken;
 import ga.jdb.FirefighterSorter.FirefighterSorter.model.PasswordResetToken;
 import ga.jdb.FirefighterSorter.FirefighterSorter.model.User;
 import ga.jdb.FirefighterSorter.FirefighterSorter.model.requests.ChangePasswordRequest;
-import ga.jdb.FirefighterSorter.FirefighterSorter.model.requests.ForgetPasswordRequest;
+import ga.jdb.FirefighterSorter.FirefighterSorter.model.requests.EmailRequest;
 import ga.jdb.FirefighterSorter.FirefighterSorter.model.requests.LoginRequest;
-import ga.jdb.FirefighterSorter.FirefighterSorter.model.requests.ResetPasswordRequest;
 import ga.jdb.FirefighterSorter.FirefighterSorter.repository.EmailVerificationTokenRepository;
 import ga.jdb.FirefighterSorter.FirefighterSorter.repository.PasswordResetTokenRepository;
 import ga.jdb.FirefighterSorter.FirefighterSorter.repository.UserRepository;
 import ga.jdb.FirefighterSorter.FirefighterSorter.security.JWTUtils;
 import ga.jdb.FirefighterSorter.FirefighterSorter.security.MyUserDetails;
-import jakarta.mail.AuthenticationFailedException;
 import jakarta.mail.MessagingException;
-import jakarta.mail.internet.AddressException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,6 +24,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -34,7 +32,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Random;
 import java.util.UUID;
 
 @Service
@@ -163,7 +160,7 @@ public class UserService {
         }
     }
 
-    public ResponseEntity<String> forgetPassword(ForgetPasswordRequest request) throws MessagingException {
+    public ResponseEntity<String> forgetPassword(EmailRequest request) throws MessagingException {
         if(userRepository.existsByEmail(request.getEmail())){
             User forgetPassUser = userRepository.findUserByEmail(request.getEmail());
             if(forgetPassUser.getStatus().equals(User.Status.Inactive))
@@ -209,6 +206,18 @@ public class UserService {
             return ResponseEntity.ok("Password has been reset Successfully! 😁");
         }else{
             throw new BadRequestException("The password is not accepted");
+        }
+    }
+
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<String> deleteUser(EmailRequest request){
+        if(!userRepository.existsByEmail(request.getEmail()))
+            throw new InformationNotFoundException("Invalid email");
+        else {
+            User deleteUser = userRepository.findUserByEmail(request.getEmail());
+            deleteUser.setStatus(User.Status.Inactive);
+            userRepository.save(deleteUser);
+            return ResponseEntity.ok("User deleted Successfully");
         }
     }
 }
