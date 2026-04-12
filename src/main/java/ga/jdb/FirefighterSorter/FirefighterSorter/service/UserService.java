@@ -7,12 +7,14 @@ import ga.jdb.FirefighterSorter.FirefighterSorter.exception.InformationNotFoundE
 import ga.jdb.FirefighterSorter.FirefighterSorter.model.EmailVerificationToken;
 import ga.jdb.FirefighterSorter.FirefighterSorter.model.PasswordResetToken;
 import ga.jdb.FirefighterSorter.FirefighterSorter.model.User;
+import ga.jdb.FirefighterSorter.FirefighterSorter.model.UserProfile;
 import ga.jdb.FirefighterSorter.FirefighterSorter.model.requests.ChangePasswordRequest;
 import ga.jdb.FirefighterSorter.FirefighterSorter.model.requests.EmailRequest;
 import ga.jdb.FirefighterSorter.FirefighterSorter.model.requests.LoginRequest;
 import ga.jdb.FirefighterSorter.FirefighterSorter.model.requests.UpdateRoleRequest;
 import ga.jdb.FirefighterSorter.FirefighterSorter.repository.EmailVerificationTokenRepository;
 import ga.jdb.FirefighterSorter.FirefighterSorter.repository.PasswordResetTokenRepository;
+import ga.jdb.FirefighterSorter.FirefighterSorter.repository.UserProfileRepository;
 import ga.jdb.FirefighterSorter.FirefighterSorter.repository.UserRepository;
 import ga.jdb.FirefighterSorter.FirefighterSorter.security.JWTUtils;
 import ga.jdb.FirefighterSorter.FirefighterSorter.security.MyUserDetails;
@@ -31,7 +33,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -48,14 +52,18 @@ public class UserService {
     private EmailVerificationTokenRepository emailVerificationTokenRepository;
     private PasswordResetTokenRepository passwordResetTokenRepository;
     private JavaMailSender mailSender;
+    private CloudinaryService cloudinaryService;
+    private UserProfileRepository userProfileRepository;
 
     @Autowired
     public UserService(UserRepository userRepository, @Lazy PasswordEncoder passwordEncoder,
                        JWTUtils jwtUtils,
                        @Lazy AuthenticationManager authenticationManager,
                        @Lazy MyUserDetails myUserDetails,
-                       EmailVerificationTokenRepository emailVerificationTokenRepository,
+                       @Lazy EmailVerificationTokenRepository emailVerificationTokenRepository,
                        @Lazy PasswordResetTokenRepository passwordResetTokenRepository,
+                       @Lazy CloudinaryService cloudinaryService,
+                       UserProfileRepository userProfileRepository,
                        @Lazy JavaMailSender mailSender){
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -64,6 +72,8 @@ public class UserService {
         this.myUserDetails = myUserDetails;
         this.emailVerificationTokenRepository = emailVerificationTokenRepository;
         this.passwordResetTokenRepository = passwordResetTokenRepository;
+        this.cloudinaryService = cloudinaryService;
+        this.userProfileRepository = userProfileRepository;
         this.mailSender = mailSender;
     }
 
@@ -244,5 +254,32 @@ public class UserService {
             userRepository.save(userObj);
             return ResponseEntity.ok("User role updated Successfully");
         }
+    }
+
+    public UserProfile updateProfile(String email, UserProfile userProfileOjb){
+        if(!email.equals(getCurrentLoggedInUser().getEmail())
+                && getCurrentLoggedInUser().getRole().equals(User.Role.Firefighter))
+        {
+            throw new AuthenticationException("Firefighter could update only his profile.");
+        }
+
+        UserProfile userProfile = userRepository.findUserByEmail(email).getUserProfile();
+
+        userProfile.setFirstName(userProfileOjb.getFirstName());
+        userProfile.setLastName(userProfileOjb.getLastName());
+        userProfile.setCpr(userProfileOjb.getCpr());
+        userProfile.setAddress(userProfileOjb.getAddress());
+        userProfile.setBirthDate(userProfileOjb.getBirthDate());
+        userProfile.setPhoneNumber(userProfileOjb.getPhoneNumber());
+
+        return userProfileRepository.save(userProfile);
+    }
+
+    public ResponseEntity<String> uploadProfileImage(MultipartFile file) throws IOException {
+        String filename = cloudinaryService.uploadProfileImage(file, getCurrentLoggedInUser().getEmail());
+        UserProfile userProfile = getCurrentLoggedInUser().getUserProfile();
+        userProfile.setProfileImageURL(filename);
+        userProfileRepository.save(userProfile);
+        return ResponseEntity.ok("Uploaded: " + filename);
     }
 }

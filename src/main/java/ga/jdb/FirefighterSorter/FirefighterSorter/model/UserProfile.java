@@ -1,10 +1,12 @@
 package ga.jdb.FirefighterSorter.FirefighterSorter.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @AllArgsConstructor
@@ -32,11 +34,15 @@ public class UserProfile {
     @Column
     private String address;
 
-    @Column(unique = true)
+    @Column
     private Long cpr;
 
     @Column
-    private LocalDateTime birthDate;
+    private LocalDate birthDate;
+
+    @Column
+    @JsonIgnore
+    private String profileImageURL;
 
     @CreationTimestamp
     @Column
@@ -46,7 +52,7 @@ public class UserProfile {
     @Column
     private LocalDateTime updatedAt;
 
-    //TODO: user model relation
-//    @Column
-//    private User user;
+    @JsonIgnore
+    @OneToOne(mappedBy = "userProfile", fetch = FetchType.LAZY)
+    private User user;
 }
