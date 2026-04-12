@@ -1,5 +1,6 @@
 package ga.jdb.FirefighterSorter.FirefighterSorter.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -62,13 +63,16 @@ public class Case {
     @Column
     private String status;
 
-    //TODO: relation to contact class
-//    @Column
-//    private List<Contact> contacts;
+    @OneToMany(mappedBy = "historyCase", fetch = FetchType.EAGER)
+    private List<HistoryGroup> historyGroups;
 
-    //TODO: relation to type class
-//    @Column
-//    private Type type;
+    @OneToMany(mappedBy = "contactCase", fetch = FetchType.EAGER)
+    private List<Contact> contacts;
+
+    @ManyToOne
+    @JoinColumn(name = "type_id")
+    @JsonIgnore
+    private Type type;
 
     @CreationTimestamp
     @Column

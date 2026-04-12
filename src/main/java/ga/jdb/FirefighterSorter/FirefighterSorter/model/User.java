@@ -5,9 +5,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -52,8 +54,11 @@ public class User {
     private Boolean verified;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "profile_id", referencedColumnName = "id")
+    @JoinColumn(name = "profile_id")
     private UserProfile userProfile;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    private List<HistoryGroup> historyGroups;
 
     @CreationTimestamp
     @Column

@@ -1,5 +1,6 @@
 package ga.jdb.FirefighterSorter.FirefighterSorter.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -28,13 +29,15 @@ public class Contact {
     @Column
     private String value;
 
-    // TODO: Add connection
-//    @Column
-//    private Case case;
+    @ManyToOne
+    @JoinColumn(name = "case_id")
+    @JsonIgnore
+    private Case contactCase;
 
-    // TODO: Add connection
-//    @Column
-//    private ContactType contactType;
+    @ManyToOne
+    @JoinColumn(name = "contact_type")
+    @JsonIgnore
+    private ContactType contactType;
 
     @CreationTimestamp
     @Column
