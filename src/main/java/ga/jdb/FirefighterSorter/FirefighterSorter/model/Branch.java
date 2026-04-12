@@ -9,6 +9,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -26,6 +27,12 @@ public class Branch {
 
     @Column
     private String address;
+
+    @OneToMany(mappedBy = "branch", fetch = FetchType.EAGER, orphanRemoval = true)
+    private List<Transport> transports;
+
+    @OneToMany(mappedBy = "branch", fetch = FetchType.EAGER)
+    private List<HistoryGroup> historyGroups;
 
     @CreationTimestamp
     @Column

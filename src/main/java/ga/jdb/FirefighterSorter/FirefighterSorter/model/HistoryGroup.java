@@ -1,11 +1,11 @@
 package ga.jdb.FirefighterSorter.FirefighterSorter.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.apache.catalina.User;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -17,23 +17,26 @@ import java.time.LocalDateTime;
 @Setter
 @Table(name = "groups")
 @Entity
-public class Group {
+public class HistoryGroup {
     @Id
     @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // TODO: relation with case
-//    @Column
-//    private Case acase;
-//
-//    // TODO: relation with user
-//    @Column
-//    private User user;
-//
-//    // TODO: relation with case
-//    @Column
-//    private Branch branch;
+    @ManyToOne
+    @JoinColumn(name = "case_id")
+    @JsonIgnore
+    private Case historyCase;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    @JsonIgnore
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "branch_id")
+    @JsonIgnore
+    private Branch branch;
 
     @CreationTimestamp
     @Column

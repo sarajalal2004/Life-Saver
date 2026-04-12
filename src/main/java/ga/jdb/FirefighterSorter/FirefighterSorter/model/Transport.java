@@ -1,5 +1,6 @@
 package ga.jdb.FirefighterSorter.FirefighterSorter.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -35,9 +36,10 @@ public class Transport {
     @Column
     private Double speed;
 
-    //TODO: relation to branch
-//    @Column
-//    private Branch branch;
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "branch_Id")
+    private Branch branch;
 
     @CreationTimestamp
     @Column

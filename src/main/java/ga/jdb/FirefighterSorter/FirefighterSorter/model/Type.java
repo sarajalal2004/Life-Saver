@@ -9,6 +9,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Table(name = "types")
 @Setter @Getter
@@ -26,6 +27,9 @@ public class Type {
 
     @Column
     private Integer priority;
+
+    @OneToMany(mappedBy = "type", fetch = FetchType.EAGER)
+    private List<Case> cases;
 
     @CreationTimestamp
     @Column

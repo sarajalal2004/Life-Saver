@@ -9,6 +9,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -24,6 +25,9 @@ public class ContactType {
 
     @Column
     private String method;
+
+    @OneToMany(mappedBy = "contactType", fetch = FetchType.EAGER)
+    private List<Contact> contacts;
 
     @CreationTimestamp
     @Column
