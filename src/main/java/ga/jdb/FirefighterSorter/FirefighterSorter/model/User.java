@@ -51,6 +51,10 @@ public class User {
     @Column
     private Boolean verified;
 
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "profile_id", referencedColumnName = "id")
+    private UserProfile userProfile;
+
     @CreationTimestamp
     @Column
     private LocalDateTime createdAt;

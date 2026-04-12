@@ -1,6 +1,7 @@
 package ga.jdb.FirefighterSorter.FirefighterSorter.controller;
 
 import ga.jdb.FirefighterSorter.FirefighterSorter.model.User;
+import ga.jdb.FirefighterSorter.FirefighterSorter.model.UserProfile;
 import ga.jdb.FirefighterSorter.FirefighterSorter.model.requests.ChangePasswordRequest;
 import ga.jdb.FirefighterSorter.FirefighterSorter.model.requests.EmailRequest;
 import ga.jdb.FirefighterSorter.FirefighterSorter.model.requests.LoginRequest;
@@ -10,6 +11,9 @@ import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping(path = "auth/users")
@@ -64,5 +68,15 @@ public class UserController {
     @PostMapping(path = "/update-role")
     public ResponseEntity<String> updateRole(@RequestBody UpdateRoleRequest updateRoleRequest){
         return userService.updateRole(updateRoleRequest);
+    }
+
+    @PutMapping(path = "/update-profile")
+    public UserProfile updateProfile(@RequestParam("email") String email, @RequestBody UserProfile userProfile){
+        return userService.updateProfile(email, userProfile);
+    }
+
+    @PostMapping(path = "/updateProfilePicture")
+    public ResponseEntity<String> uploadAvatar(@RequestParam("file") MultipartFile file) throws IOException {
+        return userService.uploadProfileImage(file);
     }
 }
