@@ -75,7 +75,7 @@ public class UserController {
         return userService.updateProfile(email, userProfile);
     }
 
-    @PostMapping(path = "/updateProfilePicture")
+    @PostMapping(path = "/update-profile-picture")
     public ResponseEntity<String> uploadAvatar(@RequestParam("file") MultipartFile file) throws IOException {
         return userService.uploadProfileImage(file);
     }

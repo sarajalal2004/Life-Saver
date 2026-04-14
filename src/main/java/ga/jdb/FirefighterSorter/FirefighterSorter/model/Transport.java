@@ -25,7 +25,13 @@ public class Transport {
     private Long id;
 
     @Column
-    private String name;
+    private String Type;
+
+    @Column
+    private String Description;
+
+    @Column
+    private String registerNumber;
 
     @Column
     private Boolean reserved;
