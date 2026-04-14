@@ -7,6 +7,7 @@ import ga.jdb.FirefighterSorter.FirefighterSorter.repository.BranchRepository;
 import ga.jdb.FirefighterSorter.FirefighterSorter.repository.TransportRepository;
 import ga.jdb.FirefighterSorter.FirefighterSorter.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -47,6 +48,7 @@ public class TransportService {
         );
     }
 
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_MANAGER')")
     public Transport createTransport(Long branchId, Transport transport){
         if(transportRepository.existsByTypeAndRegisterNumber(transport.getType(), transport.getRegisterNumber())){
             throw new InformationExistException("Couldn't add two transports with same type and register number");
@@ -58,6 +60,7 @@ public class TransportService {
         return transportRepository.save(transport);
     }
 
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_MANAGER')")
     public Transport updateTransport(Long branchId, Long transportId, Transport transport){
         if(!branchRepository.existsById(branchId))
             throw new InformationNotFoundException("the branch with ID " + branchId + "is not exists");
@@ -78,6 +81,7 @@ public class TransportService {
         return transportRepository.save(transportObj);
     }
 
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_MANAGER')")
     public Transport deleteTransport(Long branchId, Long transportId){
         if(!branchRepository.existsById(branchId))
             throw new InformationNotFoundException("the branch with ID " + branchId + "is not exists");
