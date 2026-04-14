@@ -13,6 +13,7 @@
 | POST | auth/users/update-profile | Cell 3 |  |
 | POST | auth/users/update-profile-picture | Cell 3 |  |
 | GET | api/branch/{branchId}/transports | Cell 3 |  |
+| GET | api/transports/{transportId} | private | ALL |
 | GET | api/branch/{branchId}/transports/{transportId} | private | ALL |
 | POST | api/branch/{branchId}/transports | private | MANAGER/ADMIN |
 | GET | api/branch/{branchId}/transports | private | MANAGER/ADMIN |
