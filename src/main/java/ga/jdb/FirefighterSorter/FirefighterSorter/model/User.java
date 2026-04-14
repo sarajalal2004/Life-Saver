@@ -33,7 +33,7 @@ public class User {
 
     public enum Role {
         ADMIN,
-        Manager,
+        MANAGER,
         Firefighter
     }
 
