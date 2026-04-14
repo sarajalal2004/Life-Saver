@@ -18,3 +18,8 @@
 | POST | api/branch/{branchId}/transports | private | MANAGER/ADMIN |
 | PUT | api/branch/{branchId}/transports/{transportId} | private | MANAGER/ADMIN |
 | DELETE | api/branch/{branchId}/transports/{transportId} | private | MANAGER/ADMIN |
+| GET | api/branches | private | ALL |
+| GET | api/branches/{branchId} | private | ALL |
+| POST | api/branches | private | MANAGER/ADMIN |
+| PUT | api/branches/{branchId} | private | MANAGER/ADMIN |
+| DELETE | api/branches/{branchId} | private | ADMIN |
