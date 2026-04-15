@@ -82,7 +82,7 @@ public class UserService {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
 
             user.setStatus(User.Status.Active);
-            user.setRole(User.Role.Firefighter);
+            user.setRole(User.Role.FIREFIGHTER);
             user.setVerified(false);
             User userObject = userRepository.save(user);
 
@@ -258,7 +258,7 @@ public class UserService {
 
     public UserProfile updateProfile(String email, UserProfile userProfileOjb){
         if(!email.equals(getCurrentLoggedInUser().getEmail())
-                && getCurrentLoggedInUser().getRole().equals(User.Role.Firefighter))
+                && getCurrentLoggedInUser().getRole().equals(User.Role.FIREFIGHTER))
         {
             throw new AuthenticationException("Firefighter could update only his profile.");
         }

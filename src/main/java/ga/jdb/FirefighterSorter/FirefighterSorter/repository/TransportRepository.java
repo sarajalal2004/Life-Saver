@@ -9,5 +9,7 @@ public interface TransportRepository extends JpaRepository<Transport, Long> {
     List<Transport> findByBranchId(Long branchId);
     Optional<Transport> findByIdAndBranchId(Long id, Long branchId);
     Boolean existsByTypeAndRegisterNumber(String type, String registerNumber);
+    Optional<Transport> findByTypeAndRegisterNumber(String type, String registerNumber);
+
 
 }

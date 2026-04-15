@@ -23,35 +23,36 @@ public class TransportController {
         return transportService.getAllTransports();
     }
 
-    @GetMapping(path = "/branch/{branchId}/transports")
+    @GetMapping(path = "/branches/{branchId}/transports")
     public List<Transport> getTransports(@PathVariable("branchId") Long branchId){
         return transportService.getTransports(branchId);
     }
 
-    @GetMapping(path = "/branch/{branchId}/transports/{transportId}")
+    @GetMapping(path = "/branches/{branchId}/transports/{transportId}")
     public Transport getTransport(@PathVariable("branchId") Long branchId,
                                   @PathVariable("transportId") Long transportId){
         return transportService.getTransport(branchId, transportId);
     }
 
-    @PostMapping(path = "/branch/{branchId}/transports")
+    @PostMapping(path = "/branches/{branchId}/transports")
     public Transport createTransport(@PathVariable("branchId") Long branchId, @RequestBody Transport transport){
         return transportService.createTransport(branchId, transport);
     }
 
-    @PutMapping(path = "/branch/{branchId}/transports/{transportId}")
+    @PutMapping(path = "/branches/{branchId}/transports/{transportId}")
     public Transport updateTransport(@PathVariable("branchId") Long branchId,
                                      @PathVariable("transportId") Long transportId,
                                      @RequestBody Transport transport){
         return transportService.updateTransport(branchId, transportId, transport);
     }
 
-    @DeleteMapping(path = "/branch/{branchId}/transports/{transportId}")
+    @DeleteMapping(path = "/branches/{branchId}/transports/{transportId}")
     public Transport deleteTransport(@PathVariable("branchId") Long branchId,
                                      @PathVariable("transportId") Long transportId){
         return transportService.deleteTransport(branchId, transportId);
     }
 
     //TODO: transfer transport functionality
+    //TODO: reservation
 
 }

@@ -19,7 +19,7 @@ public class TransportService {
     private UserRepository userRepository;
 
     @Autowired
-    private TransportService(TransportRepository transportRepository,
+    public TransportService(TransportRepository transportRepository,
                              UserRepository userRepository,
                              BranchRepository branchRepository){
         this.transportRepository = transportRepository;
@@ -33,15 +33,15 @@ public class TransportService {
 
     public List<Transport> getTransports(Long branchId){
         if(!branchRepository.existsById(branchId))
-            throw new InformationNotFoundException("the branch with ID " + branchId + "is not exists");
+            throw new InformationNotFoundException("the branch with ID " + branchId + " is not exists");
         return transportRepository.findByBranchId(branchId);
     }
 
     public Transport getTransport(Long branchId, Long transportId){
         if(!branchRepository.existsById(branchId))
-            throw new InformationNotFoundException("the branch with ID " + branchId + "is not exists");
+            throw new InformationNotFoundException("the branch with ID " + branchId + " is not exists");
         else if (!transportRepository.existsById(transportId)) {
-            throw new InformationNotFoundException("the transport with ID " + transportId + "is not exists");
+            throw new InformationNotFoundException("the transport with ID " + transportId + " is not exists");
         }
         return transportRepository.findByIdAndBranchId(transportId, branchId).orElseThrow(() ->
                 new InformationNotFoundException("Transport with ID " + transportId + " is not exist in branch " + branchId)
@@ -55,7 +55,7 @@ public class TransportService {
         }
         transport.setBranch(
                 branchRepository.findById(branchId).orElseThrow(()->
-                new InformationNotFoundException("the branch with ID " + branchId + "is not exists"))
+                new InformationNotFoundException("the branch with ID " + branchId + " is not exists"))
         );
         return transportRepository.save(transport);
     }
@@ -63,15 +63,17 @@ public class TransportService {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_MANAGER')")
     public Transport updateTransport(Long branchId, Long transportId, Transport transport){
         if(!branchRepository.existsById(branchId))
-            throw new InformationNotFoundException("the branch with ID " + branchId + "is not exists");
+            throw new InformationNotFoundException("the branch with ID " + branchId + " is not exists");
         else if (!transportRepository.existsById(transportId)) {
-            throw new InformationNotFoundException("the transport with ID " + transportId + "is not exists");
-        } else if(transportRepository.existsByTypeAndRegisterNumber(transport.getType(), transport.getRegisterNumber())){
-            throw new InformationExistException("Couldn't update this type and register number, because other one with same combination exists");
+            throw new InformationNotFoundException("the transport with ID " + transportId + " is not exists");
         }
         Transport transportObj = transportRepository.findByIdAndBranchId(transportId, branchId).orElseThrow(() ->
                 new InformationNotFoundException("Transport with ID " + transportId + " is not exist in branch " + branchId)
         );
+        if(transportRepository.existsByTypeAndRegisterNumber(transport.getType(), transport.getRegisterNumber())
+                && !(transportRepository.findByTypeAndRegisterNumber(transport.getType(), transport.getRegisterNumber()).get().getId() == transportObj.getId())){
+            throw new InformationExistException("Couldn't update this type and register number, because other one with same combination exists");
+        }
         transportObj.setType(transport.getType());
         transportObj.setRegisterNumber(transport.getRegisterNumber());
         transportObj.setDescription(transport.getDescription());
@@ -84,9 +86,9 @@ public class TransportService {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_MANAGER')")
     public Transport deleteTransport(Long branchId, Long transportId){
         if(!branchRepository.existsById(branchId))
-            throw new InformationNotFoundException("the branch with ID " + branchId + "is not exists");
+            throw new InformationNotFoundException("the branch with ID " + branchId + " is not exists");
         else if (!transportRepository.existsById(transportId)) {
-            throw new InformationNotFoundException("the transport with ID " + transportId + "is not exists");
+            throw new InformationNotFoundException("the transport with ID " + transportId + " is not exists");
         }
         Transport transport = transportRepository.findByIdAndBranchId(transportId, branchId).orElseThrow(() ->
                 new InformationNotFoundException("Transport with ID " + transportId + " is not exist in branch " + branchId));
