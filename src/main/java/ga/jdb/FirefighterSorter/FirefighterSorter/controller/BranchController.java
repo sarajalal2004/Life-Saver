@@ -37,9 +37,9 @@ public class BranchController {
         return branchService.updateBranch(branchId, branch);
     }
 
-//    @DeleteMapping(path = "/branches/{branchId}")
-//    public Branch deleteBranch(@PathVariable("branchId") Long branchId){
-//        return branchService.deleteBranch(branchId);
-//    }
+    @DeleteMapping(path = "/branches/{branchId}")
+    public Branch deleteBranch(@PathVariable("branchId") Long branchId){
+        return branchService.deleteBranch(branchId);
+    }
 
 }

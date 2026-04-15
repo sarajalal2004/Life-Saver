@@ -25,10 +25,10 @@ public class Transport {
     private Long id;
 
     @Column
-    private String Type;
+    private String type;
 
     @Column
-    private String Description;
+    private String description;
 
     @Column
     private String registerNumber;

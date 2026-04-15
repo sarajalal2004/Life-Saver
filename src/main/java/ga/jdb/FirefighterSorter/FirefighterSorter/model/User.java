@@ -34,7 +34,7 @@ public class User {
     public enum Role {
         ADMIN,
         MANAGER,
-        Firefighter
+        FIREFIGHTER
     }
 
     @Column
