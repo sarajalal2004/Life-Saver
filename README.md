@@ -23,3 +23,9 @@
 | POST | api/branches | private | MANAGER/ADMIN |
 | PUT | api/branches/{branchId} | private | MANAGER/ADMIN |
 | DELETE | api/branches/{branchId} | private | ADMIN |
+| GET | api/types | private | ALL |
+| GET | api/types/{typeId} | private | ALL |
+| POST | api/types | private | MANAGER/ADMIN |
+| PUT | api/types/{typeId} | private | MANAGER/ADMIN |
+| DELETE | api/types/{typeId} | private | ADMIN |
+
