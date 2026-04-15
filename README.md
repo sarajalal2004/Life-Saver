@@ -1,31 +1,46 @@
 
-| HTTP METHOD | Endpoint | Acesses | Role |
-| --------|--------|--------|------|
-| POST | auth/users/register | Cell 3 |  |
-| GET | auth/users/verify | Cell 3 |  |
-| POST | auth/users/login | Cell 3 |  |
-| POST | auth/users/change-password | Cell 3 |  |
-| POST | auth/users/forget-password | Cell 3 |  |
-| POST | auth/users/reset-password | Cell 3 |  |
-| POST | auth/users/inactivate | Cell 3 |  |
-| POST | auth/users/reactivate | Cell 3 |  |
-| POST | auth/users/update-role | Cell 3 |  |
-| POST | auth/users/update-profile | Cell 3 |  |
-| POST | auth/users/update-profile-picture | Cell 3 |  |
-| GET | api/transports | Cell 3 |  |
-| GET | api/branch/{branchId}/transports | private | ALL |
-| GET | api/branch/{branchId}/transports/{transportId} | private | ALL |
-| POST | api/branch/{branchId}/transports | private | MANAGER/ADMIN |
-| PUT | api/branch/{branchId}/transports/{transportId} | private | MANAGER/ADMIN |
-| DELETE | api/branch/{branchId}/transports/{transportId} | private | MANAGER/ADMIN |
-| GET | api/branches | private | ALL |
-| GET | api/branches/{branchId} | private | ALL |
-| POST | api/branches | private | MANAGER/ADMIN |
-| PUT | api/branches/{branchId} | private | MANAGER/ADMIN |
-| DELETE | api/branches/{branchId} | private | ADMIN |
-| GET | api/types | private | ALL |
-| GET | api/types/{typeId} | private | ALL |
-| POST | api/types | private | MANAGER/ADMIN |
-| PUT | api/types/{typeId} | private | MANAGER/ADMIN |
-| DELETE | api/types/{typeId} | private | ADMIN |
+<table>
+  <tr>
+    <th>HTTP METHOD</th>
+    <th>Endpoint</th>
+    <th>Accesses</th>
+    <th>Role</th>
+  </tr>
+  <tr><td colspan="4" align="center"><strong>🧑🏻‍🚒 User & Profile Endpoints</strong></td></tr>
+  <tr><td>POST</td><td>auth/users/register</td><td>puplic</td><td></td></tr>
+  <tr><td>GET</td><td>auth/users/verify</td><td>puplic</td><td></td></tr>
+  <tr><td>POST</td><td>auth/users/login</td><td>puplic</td><td></td></tr>
+  <tr><td>POST</td><td>auth/users/change-password</td><td>private</td><td></td></tr>
+  <tr><td>POST</td><td>auth/users/forget-password</td><td>puplic</td><td></td></tr>
+  <tr><td>POST</td><td>auth/users/reset-password</td><td>puplic</td><td></td></tr>
+  <tr><td>POST</td><td>auth/users/inactivate</td><td>private</td><td></td></tr>
+  <tr><td>POST</td><td>auth/users/reactivate</td><td>private</td><td></td></tr>
+  <tr><td>POST</td><td>auth/users/update-role</td><td>private</td><td></td></tr>
+  <tr><td>POST</td><td>auth/users/update-profile</td><td>private</td><td></td></tr>
+  <tr><td>POST</td><td>auth/users/update-profile-picture</td><td>private</td><td></td></tr>
+
+  <tr><td colspan="4" align="center"><strong>🚒 Transport Endpoints</strong></td></tr>
+  <tr><td>GET</td><td>api/transports</td><td>private</td><td></td></tr>
+  <tr><td>GET</td><td>api/branch/{branchId}/transports</td><td>private</td><td>ALL</td></tr>
+  <tr><td>GET</td><td>api/branch/{branchId}/transports/{transportId}</td><td>private</td><td>ALL</td></tr>
+  <tr><td>POST</td><td>api/branch/{branchId}/transports</td><td>private</td><td>MANAGER/ADMIN</td></tr>
+  <tr><td>PUT</td><td>api/branch/{branchId}/transports/{transportId}</td><td>private</td><td>MANAGER/ADMIN</td></tr>
+  <tr><td>DELETE</td><td>api/branch/{branchId}/transports/{transportId}</td><td>private</td><td>MANAGER/ADMIN</td></tr>
+  
+  <tr><td colspan="4" align="center"><strong>🏢 Branch Endpoints</strong></td></tr>
+  <tr><td>GET</td><td>api/branches</td><td>private</td><td>ALL</td></tr>
+  <tr><td>GET</td><td>api/branches/{branchId}</td><td>private</td><td>ALL</td></tr>
+  <tr><td>POST</td><td>api/branches</td><td>private</td><td>MANAGER/ADMIN</td></tr>
+  <tr><td>PUT</td><td>api/branches/{branchId}</td><td>private</td><td>MANAGER/ADMIN</td></tr>
+  <tr><td>DELETE</td><td>api/branches/{branchId}</td><td>private</td><td>ADMIN</td></tr>
+  
+  <tr><td colspan="4" align="center"><strong>🧯 Type Endpoints</strong></td></tr>
+  <tr><td>GET</td><td>api/types</td><td>private</td><td>ALL</td></tr>
+  <tr><td>GET</td><td>api/types/{typeId}</td><td>private</td><td>ALL</td></tr>
+  <tr><td>POST</td><td>api/types</td><td>private</td><td>MANAGER/ADMIN</td></tr>
+  <tr><td>PUT</td><td>api/types/{typeId}</td><td>private</td><td>MANAGER/ADMIN</td></tr>
+  <tr><td>DELETE</td><td>api/types/{typeId}</td><td>private</td><td>ADMIN</td></tr>
+</table>
+
+
 
