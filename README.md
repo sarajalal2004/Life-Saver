@@ -40,6 +40,13 @@
   <tr><td>POST</td><td>api/types</td><td>private</td><td>MANAGER/ADMIN</td></tr>
   <tr><td>PUT</td><td>api/types/{typeId}</td><td>private</td><td>MANAGER/ADMIN</td></tr>
   <tr><td>DELETE</td><td>api/types/{typeId}</td><td>private</td><td>ADMIN</td></tr>
+
+  <tr><td colspan="4" align="center"><strong>☎️ contact Type</strong></td></tr>
+  <tr><td>GET</td><td>api/contact-types</td><td>private</td><td>ALL</td></tr>
+  <tr><td>GET</td><td>api/contact-types/{contactTypeId}</td><td>private</td><td>ALL</td></tr>
+  <tr><td>POST</td><td>api/contact-types</td><td>private</td><td>MANAGER/ADMIN</td></tr>
+  <tr><td>PUT</td><td>api/contact-types/{contactTypeId}</td><td>private</td><td>MANAGER/ADMIN</td></tr>
+  <tr><td>DELETE</td><td>api/contact-types/{contactTypeId}</td><td>private</td><td>ADMIN</td></tr>
 </table>
 
 
