@@ -60,8 +60,18 @@ public class Case {
     @Column
     private Boolean peopleInside;
 
+    public enum CaseStatus{
+        CREATED,
+        ASSIGNED,
+        PROCESSING,
+        COMPLETED,
+        CANCELED
+
+    }
+
     @Column
-    private String status;
+    @JsonIgnore
+    private CaseStatus status;
 
     @OneToMany(mappedBy = "historyCase", fetch = FetchType.EAGER)
     private List<HistoryGroup> historyGroups;
