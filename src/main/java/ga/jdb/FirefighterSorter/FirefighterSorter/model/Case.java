@@ -70,10 +70,6 @@ public class Case {
     @ManyToOne
     private Branch suggestedBranch;
 
-    @JsonGetter("suggestedBranch")
-    public String getSuggestedBranchName() {
-        return suggestedBranch != null ? suggestedBranch.getName() : null;
-    }
 
     public enum CaseStatus{
         CREATED,

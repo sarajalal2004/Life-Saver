@@ -18,7 +18,7 @@ public class HistoryGroupController {
         this.historyGroupService = historyGroupService;
     }
 
-    @GetMapping(path = "")
+    @GetMapping(path = "/history-groups")
     public List<HistoryGroup> getGroups(){
         return historyGroupService.getGroups();
     }
@@ -33,7 +33,7 @@ public class HistoryGroupController {
         return historyGroupService.getGroupByCase(caseId, historyGroupId);
     }
 
-    @PostMapping(path = "/cases/{caseId}/branches/{branchId}/users/{userId}/history-groups/{historyGroupId}")
+    @PostMapping(path = "/cases/{caseId}/branches/{branchId}/users/{userId}/history-groups")
     public HistoryGroup createGroup(@PathVariable("caseId") Long caseId,
                                     @PathVariable("branchId") Long branchId,
                                     @PathVariable("userId") Long userId,
@@ -41,7 +41,7 @@ public class HistoryGroupController {
         return historyGroupService.createGroup(caseId, branchId, userId, historyGroup);
     }
 
-    @PutMapping(path = "history-groups/{historyGroupId}")
+    @PutMapping(path = "/history-groups/{historyGroupId}")
     public HistoryGroup updateGroup(@PathVariable("historyGroupId") Long historyGroupId,
                                     @RequestBody UpdateHistoryGroupRequest updateHistoryGroupRequest){
         return historyGroupService.updateGroup(historyGroupId, updateHistoryGroupRequest);

@@ -1,5 +1,6 @@
 package ga.jdb.FirefighterSorter.FirefighterSorter.service;
 
+import ga.jdb.FirefighterSorter.FirefighterSorter.exception.BadRequestException;
 import ga.jdb.FirefighterSorter.FirefighterSorter.exception.InformationExistException;
 import ga.jdb.FirefighterSorter.FirefighterSorter.exception.InformationNotFoundException;
 import ga.jdb.FirefighterSorter.FirefighterSorter.model.Branch;
@@ -68,28 +69,28 @@ public class HistoryGroupService {
         );
         if(historyGroupRepository.existsByHistoryCaseIdAndBranchIdAndUserId(caseId, branchId, userId))
             throw new InformationExistException("user is already assigned to this case");
-        historyGroup.getHistoryCase().setStatus(Case.CaseStatus.ASSIGNED);
         historyGroup.setHistoryCase(caseObj);
         historyGroup.setBranch(branch);
         historyGroup.setUser(user);
+        historyGroup.getHistoryCase().setStatus(Case.CaseStatus.ASSIGNED);
         return historyGroupRepository.save(historyGroup);
     }
 
     public HistoryGroup updateGroup(Long historyGroupId, UpdateHistoryGroupRequest request){
         Case caseObj = caseRepository.findById(request.getCaseId()).orElseThrow(
-                () ->  new InformationExistException("Case with id " + request.getCaseId() + " is not exists")
+                () ->  new InformationNotFoundException("Case with id " + request.getCaseId() + " is not exists")
         );
         Branch branch = branchRepository.findById(request.getBranchId()).orElseThrow(
-                () ->  new InformationExistException("Branch with id " + request.getBranchId() + " is not exists")
+                () ->  new InformationNotFoundException("Branch with id " + request.getBranchId() + " is not exists")
         );
         User user = userRepository.findById(request.getUserId()).orElseThrow(
-                () ->  new InformationExistException("User with id " + request.getUserId() + " is not exists")
+                () ->  new InformationNotFoundException("User with id " + request.getUserId() + " is not exists")
         );
         HistoryGroup historyGroup = historyGroupRepository.findById(historyGroupId).orElseThrow(
-                () ->  new InformationExistException("Group with id " + historyGroupId + " is not exists")
+                () ->  new InformationNotFoundException("Group with id " + historyGroupId + " is not exists")
         );
         if(historyGroupRepository.existsByHistoryCaseIdAndBranchIdAndUserId(request.getCaseId(), request.getBranchId(), request.getUserId()) &&
-        historyGroupRepository.findByHistoryCaseIdAndBranchIdAndUserId(request.getCaseId(), request.getBranchId(), request.getUserId()).get().getId() != historyGroupId)
+        !historyGroupRepository.findByHistoryCaseIdAndBranchIdAndUserId(request.getCaseId(), request.getBranchId(), request.getUserId()).get().getId().equals(historyGroupId))
             throw new InformationExistException("user with this combination already exists");
 
         historyGroup.setHistoryCase(caseObj);
@@ -107,16 +108,21 @@ public class HistoryGroupService {
         else if(!userRepository.existsById(userId))
             throw new InformationNotFoundException("user with id " + userId + " is not exists");
         else if(!historyGroupRepository.existsById(historyGroupId))
-            throw new InformationExistException("Group with id " + historyGroupId + " is not exists");
+            throw new InformationNotFoundException("Group with id " + historyGroupId + " is not exists");
         HistoryGroup group= historyGroupRepository.findByIdAndHistoryCaseIdAndBranchIdAndUserId(historyGroupId, caseId, branchId, userId).orElseThrow(
                 () -> new InformationNotFoundException("this group combination is not exists")
         );
-        historyGroupRepository.delete(group);
         Case caseObj = group.getHistoryCase();
-        if(caseObj.getHistoryGroups().size() == 0){
-            caseObj.setStatus(Case.CaseStatus.CREATED);
-            caseRepository.save(caseObj);
-        }
+
+        if(caseObj.getStatus().equals(Case.CaseStatus.ASSIGNED)){
+            if(caseObj.getHistoryGroups().size() == 1){
+                caseObj.setStatus(Case.CaseStatus.CREATED);
+            }
+            historyGroupRepository.delete(group);
+        } else if(!caseObj.getStatus().equals(Case.CaseStatus.CREATED))
+            throw new BadRequestException("The user couldn't be deleted from case already started or cancelled");
+        caseRepository.save(caseObj);
+
         return group;
     }
 }
