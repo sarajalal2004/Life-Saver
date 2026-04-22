@@ -51,7 +51,7 @@ This system is designed for:
 
 The system includes entities such as FireCase, Location, and ResponseUnit, with relationships defining how incidents are tracked and managed.
 
-ERD diagram: https://github.com/your-username/fire-priority-api/wiki/erd-diagram
+[ERD diagram](https://lucid.app/publicSegments/view/e5f89ba9-6401-48cd-b3ad-b33422de4c52)
 
 ---
 
