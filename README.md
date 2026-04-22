@@ -78,9 +78,7 @@ git clone https://github.com/your-username/fire-priority-api.git
 
 
 # Configure database in application.properties
-spring.datasource.url=jdbc:mysql://localhost:3306/fire_db
-spring.datasource.username=your_username
-spring.datasource.password=your_password
+Fill with your passwords and keys
 ```
 ---
 
