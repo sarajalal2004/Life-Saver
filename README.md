@@ -42,8 +42,8 @@ Unsolved or future improvements:
 This system is designed for:
 - Firefighters who need to quickly identify high-priority incidents
 - Emergency management teams monitoring multiple cases
-
-User Stories: https://github.com/your-username/fire-priority-api/wiki/user-stories
+- 
+[User Stories](https://github.com/sarajalal2004/Life-Saver/blob/main/UserStories.md)
 
 ---
 
