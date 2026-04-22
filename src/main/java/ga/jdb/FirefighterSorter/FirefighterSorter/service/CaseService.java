@@ -151,7 +151,6 @@ public class CaseService {
                 lock.lock();
                 branchesComparing.put(branch,tomTomResponse);
                 lock.unlock();
-
             });
         }
         Map.Entry<Branch, TomTomResponse> bestBranchInfo= branchesComparing.entrySet().stream().min(Comparator.comparingDouble(entry -> entry.getValue().getTravelTimeInSeconds())).orElse(null);
