@@ -146,8 +146,8 @@ Fill with your passwords and keys
   <tr><td>POST</td><td>/api/types/{typeId}/cases</td><td>Private</td><td>MANAGER / ADMIN</td></tr>
   <tr><td>PUT</td><td>/api/types/{typeId}/cases/{caseId}</td><td>Private</td><td>MANAGER / ADMIN</td></tr>
   <tr><td>DELETE</td><td>/api/types/{typeId}/cases/{caseId}</td><td>Private</td><td>ADMIN</td></tr>
-  <tr><td>GET</td><td>/api/cases/{caseId}/start</td><td>Private</td><td>FIREFIGHTER / MANAGER</td></tr>
-  <tr><td>GET</td><td>/api/cases/{caseId}/complete</td><td>Private</td><td>FIREFIGHTER / MANAGER</td></tr>
+  <tr><td>GET</td><td>/api/cases/{caseId}/start</td><td>Private</td><td>ALL</td></tr>
+  <tr><td>GET</td><td>/api/cases/{caseId}/complete</td><td>Private</td><td>ALL</td></tr>
 
   <!-- ================= CONTACT ================= -->
   <tr><td colspan="4" align="center"><strong>📞 Contact Endpoints</strong></td></tr>
