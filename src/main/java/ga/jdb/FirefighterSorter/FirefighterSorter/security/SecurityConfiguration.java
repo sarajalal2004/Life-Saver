@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.client.RestClient;
 
 @Configuration
 @EnableMethodSecurity
@@ -62,6 +63,11 @@ public class SecurityConfiguration{
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig)
             throws Exception{
         return authConfig.getAuthenticationManager();
+    }
+
+    @Bean
+    public RestClient restClient() {
+        return RestClient.builder().build();
     }
 
 }

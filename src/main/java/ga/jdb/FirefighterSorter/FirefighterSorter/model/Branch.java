@@ -26,7 +26,13 @@ public class Branch {
     private String name;
 
     @Column
-    private String address;
+    private Double latitude;
+
+    @Column
+    private Double longitude;
+
+    @OneToMany(mappedBy = "suggestedBranch", fetch = FetchType.EAGER, orphanRemoval = true)
+    private List<Case> cases;
 
     @OneToMany(mappedBy = "branch", fetch = FetchType.EAGER, orphanRemoval = true)
     private List<Transport> transports;

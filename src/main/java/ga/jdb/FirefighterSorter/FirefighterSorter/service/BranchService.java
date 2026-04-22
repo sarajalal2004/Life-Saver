@@ -48,7 +48,8 @@ public class BranchService {
                 && !(branchRepository.findByName(branch.getName()).get().getId() == branchObj.getId()))
             throw new InformationExistException("Couldn't update name to " + branch.getName() + " as other branch have the same name");
         branchObj.setName(branch.getName());
-        branchObj.setAddress(branch.getAddress());
+        branchObj.setLatitude(branch.getLatitude());
+        branchObj.setLongitude(branch.getLongitude());
         return branchRepository.save(branchObj);
     }
 

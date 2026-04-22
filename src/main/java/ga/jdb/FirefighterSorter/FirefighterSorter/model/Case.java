@@ -1,6 +1,8 @@
 package ga.jdb.FirefighterSorter.FirefighterSorter.model;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -31,21 +33,24 @@ public class Case {
     private String description;
 
     @Column
-    private String Address;
+    private Double latitude;
 
     @Column
-    private String coverageUOM;
+    private Double longitude;
 
     @Column
-    private Double coverageQuantity;
+    private Double coverageInMeter;
 
     @Column
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Double calculatedPriority;
 
     @Column
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Double calculatedDistance;
 
     @Column
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Double calculatedTime;
 
     @Column
@@ -60,6 +65,16 @@ public class Case {
     @Column
     private Boolean peopleInside;
 
+    @JoinColumn(name = "suggested_branch_id")
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @ManyToOne
+    private Branch suggestedBranch;
+
+    @JsonGetter("suggestedBranch")
+    public String getSuggestedBranchName() {
+        return suggestedBranch != null ? suggestedBranch.getName() : null;
+    }
+
     public enum CaseStatus{
         CREATED,
         ASSIGNED,
@@ -70,7 +85,8 @@ public class Case {
     }
 
     @Column
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @Enumerated(EnumType.STRING)
     private CaseStatus status;
 
     @OneToMany(mappedBy = "historyCase", fetch = FetchType.EAGER)
