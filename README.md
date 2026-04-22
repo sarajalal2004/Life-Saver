@@ -64,7 +64,7 @@ The project was broken down into phases:
 4. Testing and debugging  
 5. Documentation  
 
-Trello: https://github.com/your-username/fire-priority-api/projects
+[GitHub projects dashboard](https://github.com/users/sarajalal2004/projects/3/views/1)
 
 ---
 
