@@ -3,6 +3,7 @@ package ga.jdb.FirefighterSorter.FirefighterSorter.controller;
 import ga.jdb.FirefighterSorter.FirefighterSorter.model.Case;
 import ga.jdb.FirefighterSorter.FirefighterSorter.model.Type;
 import ga.jdb.FirefighterSorter.FirefighterSorter.service.CaseService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,12 +13,13 @@ import java.util.List;
 public class CaseController {
     private CaseService caseService;
 
+    @Autowired
     public void setCaseService(CaseService caseService){
         this.caseService = caseService;
     }
 
     @GetMapping("/cases")
-    public List<Case> getCases(){
+    public List<Case> getCases() throws InterruptedException {
         return caseService.getCases();
     }
 
@@ -44,12 +46,12 @@ public class CaseController {
         return caseService.deleteCase(typeId, caseId);
     }
 
-    @PatchMapping("/cases/{caseId}/start")
+    @GetMapping("/cases/{caseId}/start")
     public Case startProcessing(@PathVariable Long caseId){
         return caseService.startProcessing(caseId);
     }
 
-    @PatchMapping("/cases/{caseId}/complete")
+    @GetMapping("/cases/{caseId}/complete")
     public Case completeProcessing(@PathVariable Long caseId){
         return caseService.completeProcessing(caseId);
     }

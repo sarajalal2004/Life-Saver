@@ -57,14 +57,21 @@ public class HistoryGroupService {
     }
 
     public HistoryGroup createGroup(Long caseId, Long branchId, Long userId, HistoryGroup historyGroup){
-        if(!caseRepository.existsById(caseId))
-            throw new InformationNotFoundException("Case with id " + caseId + " is not exists");
-        else if(!branchRepository.existsById(branchId))
-            throw new InformationNotFoundException("Branch with id " + branchId + " is not exists");
-        else if(!userRepository.existsById(userId))
-            throw new InformationNotFoundException("user with id " + userId + " is not exists");
-        else if(historyGroupRepository.existsByHistoryCaseIdAndBranchIdAndUserId(caseId, branchId, userId))
+        Case caseObj = caseRepository.findById(caseId).orElseThrow(
+            () -> new InformationNotFoundException("Case with id " + caseId + " is not exists")
+        );
+        Branch branch = branchRepository.findById(branchId).orElseThrow(
+            () -> new InformationNotFoundException("Branch with id " + branchId + " is not exists")
+        );
+        User user = userRepository.findById(userId).orElseThrow(
+            () -> new InformationNotFoundException("user with id " + userId + " is not exists")
+        );
+        if(historyGroupRepository.existsByHistoryCaseIdAndBranchIdAndUserId(caseId, branchId, userId))
             throw new InformationExistException("user is already assigned to this case");
+        historyGroup.getHistoryCase().setStatus(Case.CaseStatus.ASSIGNED);
+        historyGroup.setHistoryCase(caseObj);
+        historyGroup.setBranch(branch);
+        historyGroup.setUser(user);
         return historyGroupRepository.save(historyGroup);
     }
 
@@ -105,6 +112,11 @@ public class HistoryGroupService {
                 () -> new InformationNotFoundException("this group combination is not exists")
         );
         historyGroupRepository.delete(group);
+        Case caseObj = group.getHistoryCase();
+        if(caseObj.getHistoryGroups().size() == 0){
+            caseObj.setStatus(Case.CaseStatus.CREATED);
+            caseRepository.save(caseObj);
+        }
         return group;
     }
 }
