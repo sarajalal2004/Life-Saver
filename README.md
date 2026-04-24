@@ -51,7 +51,7 @@ This system is designed for:
 
 The system includes entities such as FireCase, Location, and ResponseUnit, with relationships defining how incidents are tracked and managed.
 
-[ERD diagram](https://lucid.app/publicSegments/view/e5f89ba9-6401-48cd-b3ad-b33422de4c52)
+[ERD diagram](https://lucid.app/lucidchart/a3affa3a-f0f3-4cdb-9c44-ab0701dcfa98/edit?viewport_loc=-2124%2C448%2C3193%2C1291%2C0_0&invitationId=inv_e98b95d0-3341-4f48-8486-7038786c40c3)
 
 ---
 
