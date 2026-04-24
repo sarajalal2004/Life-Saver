@@ -74,8 +74,7 @@ Follow these steps to run the project locally:
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/fire-priority-api.git
-
+https://github.com/sarajalal2004/Life-Saver
 
 # Configure database in application.properties
 Fill with your passwords and keys
