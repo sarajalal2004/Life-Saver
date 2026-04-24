@@ -24,19 +24,19 @@ public class CaseController {
     }
 
     @GetMapping("/cases/{caseId}")
-    public Case getCase(@PathVariable("caseId") Long caseId){
+    public Case getCase(@PathVariable("caseId") Long caseId) throws InterruptedException {
         return caseService.getCase(caseId);
     }
 
     @PostMapping("/types/{typeId}/cases")
-    public Case createCase(@PathVariable("typeId") Long typeId, @RequestBody Case caseObj){
+    public Case createCase(@PathVariable("typeId") Long typeId, @RequestBody Case caseObj) throws InterruptedException {
         return caseService.createCase(typeId, caseObj);
     }
 
     @PutMapping("/types/{typeId}/cases/{caseId}")
     public Case updateCase(@PathVariable("typeId") Long typeId,
                            @PathVariable("caseId") Long caseId,
-                           @RequestBody Case caseObj){
+                           @RequestBody Case caseObj) throws InterruptedException {
         return caseService.updateCase(typeId, caseId, caseObj);
     }
 

@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
 @Service
@@ -43,14 +44,14 @@ public class CaseService {
         return refreshCases(caseRepository.findAll());
     }
 
-    public Case getCase(Long caseId){
+    public Case getCase(Long caseId) throws InterruptedException {
         return refreshCase(caseRepository.findById(caseId).orElseThrow(
                 () -> new InformationNotFoundException("Case with id " + caseId + " is not exists")
         ));
     }
 
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_MANAGER')")
-    public Case createCase(Long typeId, Case caseObj){
+    public Case createCase(Long typeId, Case caseObj) throws InterruptedException {
         Type type = typeRepository.findById(typeId).orElseThrow(
             () -> new InformationNotFoundException("Type with id " + typeId + " is not exists")
         );
@@ -61,7 +62,7 @@ public class CaseService {
     }
 
 
-    public Case refreshCase(Case caseObj){
+    public Case refreshCase(Case caseObj) throws InterruptedException {
         calculateCaseData(caseObj);
         return caseRepository.save(caseObj);
     }
@@ -76,7 +77,7 @@ public class CaseService {
     }
 
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_MANAGER')")
-    public Case updateCase(Long typeId, Long caseId, Case caseObj){
+    public Case updateCase(Long typeId, Long caseId, Case caseObj) throws InterruptedException {
         if(!typeRepository.existsById(typeId))
             throw new InformationNotFoundException("Type with id " + typeId + " is not exists");
         if(!caseRepository.existsById(caseId))
@@ -134,7 +135,7 @@ public class CaseService {
         return caseRepository.save(caseObj);
     }
 
-    private Case calculateCaseData(Case caseObj){
+    private Case calculateCaseData(Case caseObj) throws InterruptedException {
         ExecutorService executor = Executors.newFixedThreadPool(3);
         ReentrantLock lock = new ReentrantLock();
         List<Branch> branches = branchRepository.findAll();
@@ -153,6 +154,10 @@ public class CaseService {
                 lock.unlock();
             });
         }
+
+        executor.shutdown();
+        executor.awaitTermination(5, TimeUnit.SECONDS);
+
         Map.Entry<Branch, TomTomResponse> bestBranchInfo= branchesComparing.entrySet().stream().min(Comparator.comparingDouble(entry -> entry.getValue().getTravelTimeInSeconds())).orElse(null);
 
         if(bestBranchInfo != null){
