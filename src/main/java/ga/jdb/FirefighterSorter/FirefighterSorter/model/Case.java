@@ -66,7 +66,7 @@ public class Case {
     private Boolean peopleInside;
 
     @JoinColumn(name = "suggested_branch_id")
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @JsonIgnore
     @ManyToOne
     private Branch suggestedBranch;
 
